@@ -1,16 +1,13 @@
 package edu.pnu.study.operator;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
-public class MyOperatorContainer {
+public class MyOperatorContainer2 {
 	
 	// 스프링 프레임웍은 이 클래스의 기능과 비슷한 방식으로 동작한다
 
-//	private ArrayList<MyOperator> container = new ArrayList<>();
-	
-	private Map<String, MyOperator> container = new HashMap<>();
+	private ArrayList<MyOperator> container = new ArrayList<>();
 	
 	public int getOperatorSize() {
 		return container.size();
@@ -19,23 +16,17 @@ public class MyOperatorContainer {
 	
 	public MyOperator getOperator(String cmd) {
 		
-		MyOperator mo = container.get(cmd);
-		if (mo != null) {
-			mo.setLastUsedTime(Calendar.getInstance());
-			return mo;
+		// 컨테이너에서 오퍼레이터 객체를 검색한다.
+		for (MyOperator mo : container) {
+			if (mo.getCmd().equals(cmd)) {
+				// 객체가 있으면 현재 시간을 마지막 사용 시간으로 설정하고 리턴
+				mo.setLastUsedTime(Calendar.getInstance());
+				return mo;
+			}
 		}
 		
-//		// 컨테이너에서 오퍼레이터 객체를 검색한다.
-//		for (MyOperator mo : container) {
-//			if (mo.getCmd().equals(cmd)) {
-//				// 객체가 있으면 현재 시간을 마지막 사용 시간으로 설정하고 리턴
-//				mo.setLastUsedTime(Calendar.getInstance());
-//				return mo;
-//			}
-//		}
-		
 		// 요청된 오퍼레이터 객체가 없으면 새로 만들어서 컨테이너에 추가하고 리턴한다.
-//		MyOperator mo;
+		MyOperator mo;
 		switch(cmd) {
 			case "+": mo = new MyOperatorForAdd();	break;
 			case "-": mo = new MyOperatorForSub();	break;
@@ -43,7 +34,7 @@ public class MyOperatorContainer {
 			case "/": mo = new MyOperatorForDiv();	break;
 			default : mo = null;					break;
 		}
-		if (mo != null)	container.put(cmd, mo);
+		if (mo != null)	container.add(mo);
 		return mo;
 	}
 	
@@ -72,17 +63,14 @@ public class MyOperatorContainer {
 		// 컨테이너에서 오퍼레이터 객체들 중 second 시간만큼 사용된 적이 없는 객체를 검색한다.
 		for (int i = size - 1 ; 0 <= i ; i--) {
 
-			String key = container.keySet().toArray()[i].toString();
-			MyOperator mo = container.get(key);
-			
-//			MyOperator mo = container.get(i);
+			MyOperator mo = container.get(i);
 			
 			// 현재 시간과 객체가 마지막으로 사용된 시간을 비교한다.
 			long diff = current.getTimeInMillis() - mo.getLastUsedTime().getTimeInMillis();
 			
 			// 일정 시간(millisecond) 이상 사용되지 않은 객체는 제거한다.
 			if (millisecond < diff) {
-				container.remove(key);
+				container.remove(i);
 				mo = null;
 			}
 		}
