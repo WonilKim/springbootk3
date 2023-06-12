@@ -87,7 +87,7 @@ public class MemberDao {
 	public Member insertMember(Member member) {
 
 		try {
-			String query = "INSERT INTO member2 ( " + " pass, name) " + " VALUES ( " + " ?,?)";
+			String query = "INSERT INTO member2 (pass, name) VALUES (?,?)";
 			psmt = con.prepareStatement(query);
 			psmt.setString(1, member.getPass());
 			psmt.setString(2, member.getName());
