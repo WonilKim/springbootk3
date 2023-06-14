@@ -1,0 +1,19 @@
+@Component
+@Controller
+@RestController
+@Service
+@Repository
+@Configuration
+@Bean
+
+위 어노테이션이 있으면 그 클래스의 객체를 자동으로 만들어 컨테이너에 올린다
+
+memberController 는 memberService 를 @Autowired 로 가지고 있음
+memberService 는 memberDao 를 @Autowired 로 가지고 있음
+memberDao 는 dataSource 를 @Autowired 로 가지고 있음
+dataSource 는 application.properties 에 정보를 가지고 있음
+
+Interface 에 Autowired 되어 있고 이 Interface를 구현한 객체가 여러개 있다면
+어떤 객체를 연결할지 모르겠다는 에러가 뜬다.
+클래스를 지정해서 에러 없이 연결 시킬 수 있지만 Autowired 가 의미가 없어진다.
+실제 연결할 객체만 메모리에 올리는 방법이 좋다.
