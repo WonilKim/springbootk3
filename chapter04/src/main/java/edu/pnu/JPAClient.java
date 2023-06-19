@@ -35,9 +35,9 @@ public class JPAClient {
 
 		insertData(em, 10);
 		
-		updateData(em, 7L);
-		
-		deleteData(em, 8L);
+//		updateData(em, 7L);
+//		
+//		deleteData(em, 8L);
 
 		//
 		em.close();
