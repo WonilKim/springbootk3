@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,4 +32,24 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             throw new RuntimeException(e);
         }
     }
+	
+	@Query("Select b from Board b where b.title like %?1% order by b.seq desc")
+	List<Board> queryAnnotationTest1(String searchKeyword);
+	
+	@Query("Select b from Board b where b.title like %:searchKeyword% order by b.seq desc")
+	List<Board> queryAnnotationTest2(String searchKeyword);	// 이름이 같으면 @Param 키워드 생략 가능
+//	List<Board> queryAnnotationTest2(@Param("searchKeyword") String searchKeyword);
+	
+	@Query("Select b.seq, b.title, b.writer, b.createDate from Board b where b.title like %?1% order by b.seq desc")
+	List<Object[]> queryAnnotationTest3(String searchKeyword);
+	
+	@Query(value="Select seq, title, writer, create_date from Board where title like %?1% order by seq desc", 
+			nativeQuery=true)
+	List<Object[]> queryAnnotationTest4(String searchKeyword);
+	
+	@Query("select b from Board b order by b.seq asc")
+	List<Board> queryAnnotationTest5(Pageable paging);
+	
+
+	
 }
