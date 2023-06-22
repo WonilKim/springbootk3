@@ -66,6 +66,9 @@ public class BoardController {
 	
 	@PostMapping("/insertBoard")
 	public String insertBoardPost(Board board) {
+		board.setCnt(0l);
+		board.setCreateDate(new Date());
+		System.out.println(board);
 		boardService.insertBoard(board);
 		return "redirect:getBoardList";
 	}
@@ -88,7 +91,7 @@ public class BoardController {
 	@GetMapping("/deleteBoard")
 	public String deleteBoard(Board board) {
 		boardService.deleteBoard(board);
-		return "redirect:deleteBoard";
+		return "redirect:getBoardList";
 	}
 
 //	@Autowired
