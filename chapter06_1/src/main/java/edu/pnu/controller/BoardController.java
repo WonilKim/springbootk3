@@ -8,12 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import edu.pnu.domain.Board;
+import edu.pnu.domain.Member;
 import edu.pnu.service.BoardServiceImpl;
 
+@SessionAttributes("member")
 @Controller
 public class BoardController {
 
@@ -21,6 +25,11 @@ public class BoardController {
 	public String test() {
 		// /WEB-INF/board/test.jsp
 		return "test";
+	}
+	
+	@ModelAttribute("member")
+	public Member setMember() {
+		return new Member();
 	}
 
 
@@ -50,11 +59,26 @@ public class BoardController {
 	@Autowired
 	private BoardServiceImpl boardService;
 
-	@GetMapping("/getBoardList")
-	public String getBoardList(Model model) {
+//	@GetMapping("/getBoardList")
+//	public String getBoardList(Model model) {
+//		System.out.println("-- getBoardList()");
+//
+//		model.addAttribute("boardList", boardService.getBoardList());
+//		return "getBoardList";
+//	}
+	
+	@RequestMapping("/getBoardList")
+	public String getBoardList(@ModelAttribute("member") Member member, Model model, Board board) {
 		System.out.println("-- getBoardList()");
+		System.out.println(member);
+		if (member.getId() == null) {
+			System.out.println("  member.getId() == null");
+			return "redirect:login";
+		}
 
-		model.addAttribute("boardList", boardService.getBoardList());
+		List<Board> boardList = boardService.getBoardList();
+
+		model.addAttribute("boardList", boardList);
 		return "getBoardList";
 	}
 	
@@ -65,7 +89,11 @@ public class BoardController {
 	}
 	
 	@PostMapping("/insertBoard")
-	public String insertBoardPost(Board board) {
+	public String insertBoardPost(@ModelAttribute("member") Member member, Board board) {
+		if (member.getId() == null) {
+			return "redirect:login";
+		}
+
 		board.setCnt(0l);
 		board.setCreateDate(new Date());
 		System.out.println(board);
@@ -74,7 +102,11 @@ public class BoardController {
 	}
 	
 	@GetMapping("/getBoard")
-	public String getBoard(Long seq, Model model) {
+	public String getBoard(@ModelAttribute("member") Member member, Long seq, Model model) {
+		if (member.getId() == null) {
+			return "redirect:login";
+		}
+
 		Board board = boardService.getBoard(
 				Board.builder().seq(seq).build()
 				);
@@ -83,13 +115,21 @@ public class BoardController {
 	}
 	
 	@PostMapping("/updateBoard")
-	public String updateBoard(Board board) {
+	public String updateBoard(@ModelAttribute("member") Member member, Board board) {
+		if (member.getId() == null) {
+			return "redirect:login";
+		}
+
 		boardService.updateBoard(board);
 		return "redirect:getBoardList";
 	}
 
 	@GetMapping("/deleteBoard")
-	public String deleteBoard(Board board) {
+	public String deleteBoard(@ModelAttribute("member") Member member, Board board) {
+		if (member.getId() == null) {
+			return "redirect:login";
+		}
+
 		boardService.deleteBoard(board);
 		return "redirect:getBoardList";
 	}
